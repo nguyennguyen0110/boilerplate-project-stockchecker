@@ -47,6 +47,7 @@ suite('Functional Tests', function() {
         assert.property(res.body.stockData, 'price');
         assert.property(res.body.stockData, 'likes');
         assert.equal(res.body.stockData.stock, 'GOOG');
+        assert.equal(res.body.stockData.likes, likeGOOG);
         done();
       });
   });
@@ -61,6 +62,7 @@ suite('Functional Tests', function() {
         assert.property(res.body.stockData[0], 'price');
         assert.property(res.body.stockData[0], 'rel_likes');
         assert.equal(res.body.stockData.length, 2);
+        assert.equal(res.body.stockData[0].rel_likes, likeGOOG - likeMSFT);
         done();
       });
   });
@@ -75,26 +77,8 @@ suite('Functional Tests', function() {
         assert.property(res.body.stockData[0], 'price');
         assert.property(res.body.stockData[0], 'rel_likes');
         assert.equal(res.body.stockData.length, 2);
+        assert.equal(res.body.stockData[1].rel_likes, likeMSFT - likeGOOG + 1);
         done();
       });
   });
-  test('Likes number just change one time', done => {
-    chai.request(server)
-      .get('/api/stock-prices?stock=GOOG')
-      .end((err, res) => {
-        assert.equal(res.status, 200);
-        assert.equal(res.body.stockData.likes, likeGOOG + 1);
-        done();
-      });
-  });
-  test('Check after liked two stocks', done => {
-    chai.request(server)
-      .get('/api/stock-prices?stock=GOOG&stock=MSFT')
-      .end((err, res) => {
-        assert.equal(res.status, 200);
-        assert.equal(res.body.stockData[0].rel_likes, likeGOOG - likeMSFT);
-        done();
-      });
-  });
-  
 });
